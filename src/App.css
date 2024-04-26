@@ -7,3 +7,34 @@
   font-size: 1rem;
 }
 
+.loaderParent{
+  height: 100%;;
+  width: 100%;
+  background-color: rgba(168, 168, 168, 0.507);
+  opacity: 0.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  /* inset: 0; */
+  z-index: 2;
+}
+
+.loader{
+  height: 80px;
+  width: 80px;
+  border: 8px solid rgba(168, 168, 168, 0.507);
+  border-top: 8px solid yellow;
+  border-right: 8px solid yellow;
+  border-radius: 50%;
+  animation: loader-animation 0.7s infinite;
+}
+
+@keyframes loader-animation {
+  0%{
+    transform: rotate(0deg);
+  }
+  100%{
+    transform: rotate(360deg);
+  }
+}

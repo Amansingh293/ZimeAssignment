@@ -32,8 +32,10 @@ export const TableSearch = () => {
   const [limit, setLimit] = useState(10);
   const [tagsAvailable, setTagsAvailable] = useState([]);
 
+  const [loader, setLoader] = useState(false);
   // functions
 
+  // search matching function
   const searchMatching = () => {
     let searchFilter = [];
 
@@ -56,11 +58,11 @@ export const TableSearch = () => {
     }
 
     setFilteredData((filteredData) => searchFilter);
-
-    console.log(filteredData);
   };
 
+  // data fetching function
   const dataFetcher = async () => {
+    setLoader(true);
     try {
       const response = await fetch(
         `https://dummyjson.com/posts?skip=${skip}&limit=${limit}`
@@ -92,21 +94,21 @@ export const TableSearch = () => {
       setItems((items) => itemsAvailable);
 
       setFilteredData((filteredData) => []);
-      // console.log(result);
+
+      setLoader(false);
     } catch (err) {
       message.error("Error fetching data");
       console.log(err.message);
     }
   };
-
+  // pagination handling function
   const handlePagination = (e) => {
     setSkip((skip) => e * 10 - 10);
     setLimit((limit) => 10);
   };
 
+  // filter selection handler function
   const selectHandler = (e) => {
-    console.log(tagsAvailable[e.key]);
-
     if (tagsAvailable[e.key] === undefined) {
       setFilteredData((filteredData) => []);
       setSelectedFilter((selectedFilter) => []);
@@ -121,6 +123,7 @@ export const TableSearch = () => {
     }
   };
 
+  // filter handling function
   const filterHandler = () => {
     if (selectedFilter.length === 0) {
       setFilteredData((filtered) => []);
@@ -136,10 +139,10 @@ export const TableSearch = () => {
       });
 
       setFilteredData((filteredData) => filtered);
-      // console.log(filtered);
     });
   };
 
+  // on searching field updator function
   const onSearch = (e) => {
     setSearchValue(e.target.value);
   };
@@ -174,6 +177,7 @@ export const TableSearch = () => {
   useEffect(() => {
     searchMatching();
   }, [fetchedData, searched]);
+  
   // effect for data fetching
   useEffect(() => {
     dataFetcher();
@@ -211,78 +215,84 @@ export const TableSearch = () => {
   ];
 
   return (
-    <div className="p-8 rounded-lg border-black flex flex-col justify-around gap-4 ">
-      <div className="flex justify-start items-center gap-1">
-        <Space direction="vertical">
-          <Search
-            value={searchValue}
-            placeholder="input search text"
-            onChange={onSearch}
-            style={{
-              width: 200,
+    <>
+      {loader ? (
+        <div className="loaderParent">
+          <div className="loader"></div>
+        </div>
+      ) : (
+        <div className="p-8 rounded-lg border-black flex flex-col justify-around gap-4 ">
+          <div className="flex justify-start items-center gap-1">
+            <Space direction="vertical">
+              <Search
+                value={searchValue}
+                placeholder="input search text"
+                onChange={onSearch}
+                style={{
+                  width: 200,
+                }}
+              />
+            </Space>
+            <Button
+              className="flex justify-center items-center"
+              onClick={() => setSearched(!searched)}
+            >
+              Search
+            </Button>
+          </div>
+          <div className="flex justify-between items-center flex-col md:flex-row gap-2">
+            {items && (
+              <Dropdown
+                menu={{
+                  items,
+                  selectable: true,
+                  defaultSelectedKeys: ["1"],
+                  onClick: (e) => {
+                    selectHandler(e);
+                  },
+                  title: "Select Tag",
+                }}
+                className="border rounded-lg p-2 w-[10rem]"
+              >
+                <Typography.Link>
+                  <Space>
+                    Select Tag
+                    <DownOutlined />
+                  </Space>
+                </Typography.Link>
+              </Dropdown>
+            )}
+            <div className="flex justify-center gap-1 items-center w-[60%]"></div>
+            {selectedFilter &&
+              selectedFilter.map((ele, i) => {
+                return (
+                  <Tags
+                    selectedFilter={selectedFilter}
+                    setSelectedFilter={setSelectedFilter}
+                    text={ele}
+                    key={i}
+                  />
+                );
+              })}
+          </div>
+          <Table
+            columns={columns}
+            dataSource={filteredData.length === 0 ? fetchedData : filteredData}
+            className=" border-[1px] rounded-lg shadow-xl overflow-auto"
+            pagination={false}
+            footer={() => {
+              return (
+                <Pagination
+                  defaultCurrent={skip / 10}
+                  total={150}
+                  onChange={handlePagination}
+                  showSizeChanger={false}
+                />
+              );
             }}
           />
-        </Space>
-        <Button
-          className="flex justify-center items-center"
-          onClick={() => setSearched(!searched)}
-        >
-          Search
-        </Button>
-      </div>
-      <div className="flex justify-between items-center flex-col md:flex-row gap-2">
-        {items && (
-          <Dropdown
-            menu={{
-              items,
-              selectable: true,
-              defaultSelectedKeys: ["1"],
-              onClick: (e) => {
-                selectHandler(e);
-              },
-              title: "Select Tag",
-            }}
-            className="border rounded-lg p-2 w-[10rem]"
-          >
-            <Typography.Link>
-              <Space>
-                Select Tag
-                <DownOutlined />
-              </Space>
-            </Typography.Link>
-          </Dropdown>
-        )}
-        <div className="flex justify-center gap-1 items-center w-[60%]"></div>
-        {selectedFilter &&
-          selectedFilter.map((ele, i) => {
-            return (
-              <Tags
-                selectedFilter={selectedFilter}
-                setSelectedFilter={setSelectedFilter}
-                text={ele}
-                key={i}
-              />
-            );
-          })}
-      </div>
-      <Table
-        columns={columns}
-        dataSource={filteredData.length === 0 ? fetchedData : filteredData}
-        className=" border-[1px] rounded-lg shadow-xl overflow-auto"
-        pagination={false}
-        footer={() => {
-          return (
-            <Pagination
-              defaultCurrent={skip / 10}
-              total={150}
-              onChange={handlePagination}
-              showSizeChanger={false}
-            />
-          );
-        }}
-      />
-    </div>
+        </div>
+      )}
+    </>
   );
 };
-
-
