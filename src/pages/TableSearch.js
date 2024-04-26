@@ -1,4 +1,4 @@
-import { Button, Dropdown, Pagination, Table, message } from "antd";
+import { Button, Dropdown, Input, Pagination, Table, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { DownOutlined } from "@ant-design/icons";
 import { Space, Typography } from "antd";
@@ -52,9 +52,7 @@ export const TableSearch = () => {
     });
 
     if (searchFilter.length === 0) {
-      message.info("No Match Found !!");
-    } else {
-      message.info("Match Found");
+      message.info("No Search Found !!");
     }
 
     setFilteredData((filteredData) => searchFilter);
@@ -171,13 +169,13 @@ export const TableSearch = () => {
   // effect for filteration handler
   useEffect(() => {
     filterHandler();
-  }, [selectedFilter, fetchedData]);
+  }, [selectedFilter, fetchedData, searched]);
 
   // effect for search matching
   useEffect(() => {
     searchMatching();
   }, [fetchedData, searched]);
-  
+
   // effect for data fetching
   useEffect(() => {
     dataFetcher();
@@ -223,16 +221,14 @@ export const TableSearch = () => {
       ) : (
         <div className="p-8 rounded-lg border-black flex flex-col justify-around gap-4 ">
           <div className="flex justify-start items-center gap-1">
-            <Space direction="vertical">
-              <Search
-                value={searchValue}
-                placeholder="input search text"
-                onChange={onSearch}
-                style={{
-                  width: 200,
-                }}
-              />
-            </Space>
+            <Input
+              value={searchValue}
+              placeholder="input search text"
+              onChange={onSearch}
+              style={{
+                width: 200,
+              }}
+            />
             <Button
               className="flex justify-center items-center"
               onClick={() => setSearched(!searched)}
@@ -283,7 +279,7 @@ export const TableSearch = () => {
             footer={() => {
               return (
                 <Pagination
-                  defaultCurrent={skip / 10}
+                  defaultCurrent={skip / 10 + 1}
                   total={150}
                   onChange={handlePagination}
                   showSizeChanger={false}
