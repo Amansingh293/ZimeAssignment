@@ -52,14 +52,11 @@ export const TableSearch = () => {
     });
 
     if (searchFilter.length === 0) {
-      message.info("No Search Found !!");
+      message.info("No Search Found !! Showing All Data");
       setFilteredData((filteredData) => fetchedData);
-    }
-    else{
+    } else {
       setFilteredData((filteredData) => searchFilter);
-
     }
-
   };
 
   // data fetching function
@@ -147,7 +144,7 @@ export const TableSearch = () => {
     console.log(filtered);
 
     if (filtered.length === 0) {
-      message.info("No Filters Found");
+      message.info("No Filters Found !! Showing All Data");
     }
     setFilteredData(filtered);
   };
