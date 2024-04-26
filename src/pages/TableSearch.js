@@ -53,9 +53,13 @@ export const TableSearch = () => {
 
     if (searchFilter.length === 0) {
       message.info("No Search Found !!");
+      setFilteredData((filteredData) => fetchedData);
+    }
+    else{
+      setFilteredData((filteredData) => searchFilter);
+
     }
 
-    setFilteredData((filteredData) => searchFilter);
   };
 
   // data fetching function
@@ -91,7 +95,7 @@ export const TableSearch = () => {
 
       setItems((items) => itemsAvailable);
 
-      setFilteredData((filteredData) => []);
+      // setFilteredData(result.posts);
 
       setLoader(false);
     } catch (err) {
@@ -129,16 +133,26 @@ export const TableSearch = () => {
     }
     let filtered = [];
 
-    selectedFilter.forEach((tag) => {
-      fetchedData.forEach((obj) => {
-        if (obj.tags.includes(tag) && !filtered?.includes(obj)) {
-          filtered.push(obj);
+    fetchedData.forEach((obj) => {
+      let count = 0;
+      selectedFilter.forEach((ele) => {
+        if (obj.tags.includes(ele)) {
+          count++;
         }
       });
-
-      setFilteredData((filteredData) => filtered);
+      if (count === selectedFilter.length) {
+        filtered.push(obj);
+      }
     });
+    console.log(filtered);
+
+    if (filtered.length === 0) {
+      message.info("No Filters Found");
+    }
+    setFilteredData(filtered);
   };
+
+  console.log(filteredData, "filtered Data");
 
   // on searching field updator function
   const onSearch = (e) => {
