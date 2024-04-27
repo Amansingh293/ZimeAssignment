@@ -127,7 +127,6 @@ export const TableSearch = () => {
   const filterHandler = () => {
     if (selectedFilter.length === 0) {
       // setFilteredData((filtered) => []);
-      searchMatching();
       return;
     }
     let filtered = [];
