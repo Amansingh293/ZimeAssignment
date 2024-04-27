@@ -38,6 +38,8 @@ export const TableSearch = () => {
   // search matching function
   const searchMatching = () => {
     let searchFilter = [];
+    setFilteredData(fetchedData);
+    setSelectedFilter([]);
 
     if (searchValue === "") {
       setFilteredData((filteredData) => fetchedData);
@@ -124,6 +126,9 @@ export const TableSearch = () => {
 
   // filter handling function
   const filterHandler = () => {
+
+    setFilteredData(fetchedData);
+    setSearchValue("");
     if (selectedFilter.length === 0) {
       setFilteredData((filtered) => []);
       return;
@@ -141,15 +146,12 @@ export const TableSearch = () => {
         filtered.push(obj);
       }
     });
-    console.log(filtered);
 
     if (filtered.length === 0) {
       message.info("No Filters Found !! Showing All Data");
     }
     setFilteredData(filtered);
   };
-
-  console.log(filteredData, "filtered Data");
 
   // on searching field updator function
   const onSearch = (e) => {
@@ -180,7 +182,7 @@ export const TableSearch = () => {
   // effect for filteration handler
   useEffect(() => {
     filterHandler();
-  }, [selectedFilter, fetchedData, searched]);
+  }, [selectedFilter, fetchedData]);
 
   // effect for search matching
   useEffect(() => {
