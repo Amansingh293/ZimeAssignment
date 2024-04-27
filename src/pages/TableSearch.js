@@ -126,7 +126,7 @@ export const TableSearch = () => {
   // filter handling function
   const filterHandler = () => {
     if (selectedFilter.length === 0) {
-      // setFilteredData((filtered) => []);
+      searchValue.length === 0 && setFilteredData((filtered) => fetchedData);
       return;
     }
     let filtered = [];
@@ -179,12 +179,11 @@ export const TableSearch = () => {
   useEffect(() => {
     filterHandler();
   }, [selectedFilter, fetchedData]);
-  
+
   // effect for search matching
   useEffect(() => {
     searchMatching();
   }, [fetchedData, searched]);
-
 
   // effect for data fetching
   useEffect(() => {
